@@ -1,4 +1,4 @@
-import 'package:cat_app/features/home/presentation/screens/home_screen.dart';
+import 'package:cat_app/core/routing/app_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 class CatApp extends StatelessWidget {
@@ -6,10 +6,11 @@ class CatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Cat App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const HomeScreen(),
+      routerConfig: appRouter,
     );
   }
 }

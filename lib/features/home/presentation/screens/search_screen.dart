@@ -1,4 +1,7 @@
 import 'package:cat_app/core/service locator/service_locator.dart';
+import 'package:cat_app/core/theme/app_sizes.dart';
+import 'package:cat_app/core/theme/app_text_styles.dart';
+import 'package:cat_app/core/theme/theme_toggle_button.dart';
 import 'package:cat_app/features/home/presentation/controller/breeds_cubit.dart';
 import 'package:cat_app/features/home/presentation/controller/breeds_state.dart';
 import 'package:cat_app/features/home/presentation/widgets/breeds_list.dart';
@@ -24,39 +27,76 @@ class _BreedsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BreedsCubit, BreedsState>(
       builder: (context, state) {
+        final colors = Theme.of(context).colorScheme;
         return Scaffold(
-          backgroundColor: const Color(0xFFF6F8FC),
           appBar: AppBar(
-            title: const Text(
+            title: Text(
               'سلالات القطط',
-              style: TextStyle(fontWeight: FontWeight.w700),
+              style: AppTextStyles.titleLarge.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             centerTitle: true,
-            elevation: 0,
-            backgroundColor: const Color(0xFFF6F8FC),
-            foregroundColor: const Color(0xFF263238),
+            actions: const [ThemeToggleButton()],
           ),
           body: SafeArea(
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                  child: TextField(
-                    onChanged: context.read<BreedsCubit>().searchBreeds,
-                    decoration: InputDecoration(
-                      hintText: 'ابحث عن سلالة أو دولة أو نوع الفراء',
-                      prefixIcon: const Icon(Icons.search_rounded),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
+                  padding: EdgeInsets.fromLTRB(
+                    AppSizes.p20,
+                    AppSizes.p8,
+                    AppSizes.p20,
+                    AppSizes.p16,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'اكتشف سلالتك المفضلة',
+                        style: AppTextStyles.headlineMedium.copyWith(
+                          color: colors.onSurface,
+                        ),
                       ),
-                    ),
+                      SizedBox(height: AppSizes.p4),
+                      Text(
+                        'تعرّف على أصل كل سلالة وصفاتها.',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: colors.secondary,
+                        ),
+                      ),
+                      SizedBox(height: AppSizes.p16),
+                      TextField(
+                        onChanged: context.read<BreedsCubit>().searchBreeds,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: colors.onSurface,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'ابحث بالاسم أو الدولة أو نوع الفراء',
+                          prefixIcon: Icon(
+                            Icons.search_rounded,
+                            color: colors.primary,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(AppSizes.r16),
+                          ),
+                        ),
+                      ),
+                      if (state.breeds.isNotEmpty) ...[
+                        SizedBox(height: AppSizes.p12),
+                        Text(
+                          '${state.filteredBreeds.length} سلالة',
+                          style: AppTextStyles.labelMedium.copyWith(
+                            color: colors.secondary,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
                 Expanded(
                   child: RefreshIndicator(
+                    color: colors.primary,
                     onRefresh: context.read<BreedsCubit>().getBreeds,
                     child: BreedsList(state: state),
                   ),

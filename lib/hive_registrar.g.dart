@@ -3,16 +3,19 @@
 // Check in to version control
 
 import 'package:hive_ce/hive_ce.dart';
+import 'package:cat_app/features/home/data/models/breed_model.dart';
 import 'package:cat_app/features/home/data/models/facts_model.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(BreedModelAdapter());
     registerAdapter(FactsModelAdapter());
   }
 }
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(BreedModelAdapter());
     registerAdapter(FactsModelAdapter());
   }
 }

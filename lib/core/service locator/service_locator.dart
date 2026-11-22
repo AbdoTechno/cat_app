@@ -6,7 +6,9 @@ import 'package:cat_app/features/home/data/datasources/cat_local_data_source.dar
 import 'package:cat_app/features/home/data/datasources/cat_remote_data_source.dart';
 import 'package:cat_app/features/home/data/repositories/cat_repository_impl.dart';
 import 'package:cat_app/features/home/domain/repositories/cat_repository.dart';
+import 'package:cat_app/features/home/domain/usecases/get_breeds_use_case.dart';
 import 'package:cat_app/features/home/domain/usecases/get_cat_facts_use_case.dart';
+import 'package:cat_app/features/home/presentation/controller/breeds_cubit.dart';
 import 'package:cat_app/features/home/presentation/controller/home_cubit.dart';
 
 final gitIt = GetIt.instance;
@@ -37,7 +39,13 @@ Future<void> setupServiceLocator() async {
   gitIt.registerLazySingleton<GetCatFactsUseCase>(
     () => GetCatFactsUseCase(catRepository: gitIt<CatRepository>()),
   );
+  gitIt.registerLazySingleton<GetBreedsUseCase>(
+    () => GetBreedsUseCase(catRepository: gitIt<CatRepository>()),
+  );
   gitIt.registerFactory<HomeCubit>(
     () => HomeCubit(getFactsUseCase: gitIt<GetCatFactsUseCase>()),
+  );
+  gitIt.registerFactory<BreedsCubit>(
+    () => BreedsCubit(getBreedsUseCase: gitIt<GetBreedsUseCase>()),
   );
 }

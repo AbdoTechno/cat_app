@@ -49,8 +49,9 @@ class DioService extends ApiConsumer {
     Object? data,
     Map<String, dynamic>? queryParameters,
   }) async {
-    Response<dynamic> response = await _dio.get(path);
+   
     try {
+       Response<dynamic> response = await _dio.get(path);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return response.data;
       } else {

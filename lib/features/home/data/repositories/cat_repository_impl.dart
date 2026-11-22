@@ -8,13 +8,35 @@ import 'package:dartz/dartz.dart';
 class CatRepositoryImpl implements CatRepository {
   final CatRemoteDataSource remoteDataSource;
   final CatLocalDataSource localDataSource;
+
   CatRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
   });
 
   @override
-  Future<Either<Failure, FactsEntity>> getFacts() {
-    return remoteDataSource.getCatFacts();
+  Future<Either<Failure, FactsEntity>> getFacts() async {
+    // 1. Try fetching from API first
+    final remoteResult = await remoteDataSource.getCatFacts();
+    return remoteResult.fold(
+      (failure) async {
+        // 2. API failed, fallback to cache
+        final localResult = await localDataSource.getCatFacts();
+        return localResult.fold(
+          (message) => Left(Failure(errMessage: message)),
+          (facts) => Right(facts),
+        );
+      },
+      (facts) async {
+        // 3. API succeeded, update cache
+        try {
+          await localDataSource.cacheCatFacts(facts);
+        } catch (_) {
+          // Don't fail if caching fails
+        }
+        // 4. Return latest API data
+        return Right(facts);
+      },
+    );
   }
 }

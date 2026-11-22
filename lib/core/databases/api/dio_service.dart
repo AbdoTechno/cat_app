@@ -1,6 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:cat_app/core/databases/api/api_constants.dart';
 import 'package:cat_app/core/databases/api/api_consumer.dart';
-import 'package:cat_app/core/errors/error_model.dart';
 import 'package:cat_app/core/errors/expentions.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -20,17 +20,19 @@ class DioService extends ApiConsumer {
         'Accept': 'application/json',
       },
     );
-    _dio.interceptors.addAll([
-      PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-        responseBody: true,
-        responseHeader: false,
-        error: true,
-        compact: true,
-        maxWidth: 90,
-      ),
-    ]);
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: false,
+          error: true,
+          compact: true,
+          maxWidth: 90,
+        ),
+      );
+    }
   }
 
   @override
@@ -49,22 +51,15 @@ class DioService extends ApiConsumer {
     Object? data,
     Map<String, dynamic>? queryParameters,
   }) async {
-   
     try {
-       Response<dynamic> response = await _dio.get(path);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data;
-      } else {
-        throw ServerException(ErrorModel.fromJson(response.data));
-      }
-    } on Exception catch (e) {
-      if (e is DioException) {
-        handleDioException(e);
-      } else {
-        throw UnknownException(
-          ErrorModel(errorMessage: e.toString(), status: 500),
-        );
-      }
+      final response = await _dio.get(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      handleDioException(e);
     }
   }
 

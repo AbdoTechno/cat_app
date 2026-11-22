@@ -5,17 +5,9 @@
 // "pattern": "Ticked"
 
 abstract class BreedEntity {
-  final String breed;
-  final String country;
-  final String origin;
-  final String coat;
-  final String pattern;
-
-  BreedEntity({
-    required this.breed,
-    required this.country,
-    required this.origin,
-    required this.coat,
-    required this.pattern,
-  });
+  String get breed;
+  String get country;
+  String get origin;
+  String get coat;
+  String get pattern;
 }

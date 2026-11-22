@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:cat_app/core/errors/failure.dart';
 import 'package:cat_app/features/home/data/datasources/cat_local_data_source.dart';
 import 'package:cat_app/features/home/data/datasources/cat_remote_data_source.dart';
@@ -24,7 +26,11 @@ class CatRepositoryImpl implements CatRepository {
         // 2. API failed, fallback to cache
         final localResult = await localDataSource.getCatFacts();
         return localResult.fold(
-          (message) => Left(Failure(errMessage: message)),
+          (message) => Left(
+            Failure(
+              errMessage: '${failure.errMessage} (Local cache: $message)',
+            ),
+          ),
           (facts) => Right(facts),
         );
       },
@@ -32,8 +38,12 @@ class CatRepositoryImpl implements CatRepository {
         // 3. API succeeded, update cache
         try {
           await localDataSource.cacheCatFacts(facts);
-        } catch (_) {
-          // Don't fail if caching fails
+        } catch (error, stackTrace) {
+          developer.log(
+            'Failed to cache cat fact.',
+            error: error,
+            stackTrace: stackTrace,
+          );
         }
         // 4. Return latest API data
         return Right(facts);
@@ -48,15 +58,23 @@ class CatRepositoryImpl implements CatRepository {
       (failure) async {
         final localResult = await localDataSource.getBreedsFacts();
         return localResult.fold(
-          (message) => Left(Failure(errMessage: message)),
+          (message) => Left(
+            Failure(
+              errMessage: '${failure.errMessage} (Local cache: $message)',
+            ),
+          ),
           (breeds) => Right(breeds),
         );
       },
       (breeds) async {
         try {
           await localDataSource.cacheBreedsFacts(breeds);
-        } catch (_) {
-          // Don't fail if caching fails.
+        } catch (error, stackTrace) {
+          developer.log(
+            'Failed to cache cat breeds.',
+            error: error,
+            stackTrace: stackTrace,
+          );
         }
         return Right(breeds);
       },

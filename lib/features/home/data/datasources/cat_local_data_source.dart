@@ -58,11 +58,25 @@ class CatLocalDataSourceImpl implements CatLocalDataSource {
   @override
   Future<void> cacheBreedsFacts(List<BreedEntity> breeds) async {
     final box = await HiveServices.instance.openBox<BreedModel>(_breedsBox);
-    final breedModels = breeds.map((breed) => breed as BreedModel).toList();
+    final breedModels = breeds
+        .map(
+          (breed) => BreedModel(
+            breed: breed.breed,
+            country: breed.country,
+            origin: breed.origin,
+            coat: breed.coat,
+            pattern: breed.pattern,
+          ),
+        )
+        .toList();
     final entries = <int, BreedModel>{
       for (var i = 0; i < breedModels.length; i++) i: breedModels[i],
     };
-    await box.clear();
     await box.putAll(entries);
+
+    final keysToDelete = box.keys
+        .where((key) => !entries.containsKey(key))
+        .toList();
+    await box.deleteAll(keysToDelete);
   }
 }

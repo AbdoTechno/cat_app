@@ -29,9 +29,5 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-    // home route
-    GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
-    // search route
-    GoRoute(path: '/search', builder: (context, state) => const SearchScreen()),
   ],
 );

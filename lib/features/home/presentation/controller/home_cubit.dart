@@ -17,16 +17,18 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> getCatFacts() async {
     _onChangeScreenState(WidgetStateEnum.loading);
     final result = await getFactsUseCase();
+    if (isClosed) {
+      return;
+    }
+
     result.fold(
       (failure) {
-        if (!isClosed) {
-          emit(
-            state.copyWith(
-              widgetStateEnum: WidgetStateEnum.failure,
-              message: failure.errMessage,
-            ),
-          );
-        }
+        emit(
+          state.copyWith(
+            widgetStateEnum: WidgetStateEnum.failure,
+            message: failure.errMessage,
+          ),
+        );
       },
       (factsEntity) {
         _onChangeScreenState(WidgetStateEnum.success);

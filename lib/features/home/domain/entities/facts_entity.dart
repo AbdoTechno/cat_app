@@ -1,6 +1,4 @@
-class FactsEntity {
-  final String? fact;
-  final int? length;
-
-  FactsEntity({required this.fact, required this.length});
+abstract class FactsEntity {
+  String? get fact;
+  int? get length;
 }

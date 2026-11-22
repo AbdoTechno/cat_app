@@ -27,7 +27,7 @@ Future<void> setupServiceLocator() async {
   gitIt.registerLazySingleton<CacheHelper>(() => cacheHelper);
 
   gitIt.registerLazySingleton<CatRemoteDataSource>(
-    () => CatRemoteDataSourceImpl(dioService: gitIt<DioService>()),
+    () => CatRemoteDataSourceImpl(apiConsumer: gitIt<DioService>()),
   );
   gitIt.registerLazySingleton<CatLocalDataSource>(CatLocalDataSourceImpl.new);
   gitIt.registerLazySingleton<CatRepository>(

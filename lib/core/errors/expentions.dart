@@ -1,5 +1,5 @@
-
 import 'package:dio/dio.dart';
+
 import 'error_model.dart';
 
 //! Base Exceptions
@@ -80,7 +80,7 @@ class TooManyRequestsException extends ServerException {
 
 //! Dio Exception Handler
 
-void handleDioException(DioException exception) {
+Never handleDioException(DioException exception) {
   final errorModel = _createErrorModel(exception);
 
   switch (exception.type) {
@@ -113,10 +113,7 @@ void handleDioException(DioException exception) {
 
 //! HTTP Status Code Handler
 
-Never _handleBadResponse(
-  DioException exception,
-  ErrorModel errorModel,
-) {
+Never _handleBadResponse(DioException exception, ErrorModel errorModel) {
   switch (exception.response?.statusCode) {
     case 400:
       throw BadResponseException(errorModel);
@@ -149,9 +146,7 @@ ErrorModel _createErrorModel(DioException exception) {
 
   if (responseData is Map) {
     try {
-      return ErrorModel.fromJson(
-        Map<String, dynamic>.from(responseData),
-      );
+      return ErrorModel.fromJson(Map<String, dynamic>.from(responseData));
     } catch (_) {
       // Fall back to a generic error model.
     }

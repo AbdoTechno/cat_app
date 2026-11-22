@@ -10,24 +10,28 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'breed_model.g.dart';
 
-
 @HiveType(typeId: 1)
 @JsonSerializable()
-class BreedModel extends BreedEntity {
+class BreedModel implements BreedEntity {
   @HiveField(0)
   @JsonKey(name: 'breed')
+  @override
   final String breed;
   @HiveField(1)
   @JsonKey(name: 'country')
+  @override
   final String country;
   @HiveField(2)
   @JsonKey(name: 'origin')
+  @override
   final String origin;
   @HiveField(3)
   @JsonKey(name: 'coat')
+  @override
   final String coat;
   @HiveField(4)
   @JsonKey(name: 'pattern')
+  @override
   final String pattern;
 
   BreedModel({
@@ -36,13 +40,7 @@ class BreedModel extends BreedEntity {
     required this.origin,
     required this.coat,
     required this.pattern,
-  }) : super(
-         breed: breed,
-         country: country,
-         origin: origin,
-         coat: coat,
-         pattern: pattern,
-       );
+  });
 
   factory BreedModel.fromJson(Map<String, dynamic> json) =>
       _$BreedModelFromJson(json);
